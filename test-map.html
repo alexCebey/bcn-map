@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Barcelona Highlights – Filled Icons (Gold + Dark)</title>
+  <title>Barcelona Highlights – Whimsical Icons</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     html, body, #map { margin:0; padding:0; height:100%; }
@@ -15,167 +15,193 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* ====== Config ====== */
-const GOLD = '#C8A15E';     // brand gold
-const DARK = '#111111';     // outline
-const ICON_SIZE = 50;       // <— make bigger/smaller here (px)
+/* ====== Brand & icon config ====== */
+const GOLD = '#C8A15E';
+const DARK = '#1a1a1a';
+const TILE_RED = '#C96A4A';
+const TILE_OCHRE = '#D9A441';
+const TILE_TEAL = '#2CA6A4';
+const TILE_BLUE = '#2E7BBE';
+const STONE = '#D9B27D';
+const ICON_SIZE = 56; // bigger icons
 
-/* Build Leaflet icon from inline SVG */
-function makeIcon(svg, size = ICON_SIZE){
+// Origin: El Alma – Santa Anna 12
+const ORIGIN = { lat: 41.385116, lon: 2.171445 };
+
+/* Helper: inline SVG → Leaflet icon */
+function iconFromSVG(svg, size = ICON_SIZE){
   const url = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
   return L.icon({
     iconUrl: url,
     iconSize: [size, size],
-    iconAnchor: [size/2, size],    // bottom center
+    iconAnchor: [size/2, size],
     popupAnchor: [0, -size*0.7]
   });
 }
 
-/* ====== Filled (2-tone) SVGs ======
-   Simple, bold silhouettes with dark stroke for readability.
-*/
-const svg = {
+/* ====== Whimsical filled icons (gold fill + dark outline + colorful “tiles”) ====== */
+const SVG = {
   sagrada: `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <rect x="8" y="40" width="48" height="14" rx="3"/>
-        <path d="M18 40 L24 16 L30 40 Z"/>
-        <path d="M30 40 L34 10 L38 40 Z"/>
-        <path d="M42 40 L46 16 L50 40 Z"/>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+      <!-- base -->
+      <rect x="10" y="50" width="60" height="16" rx="4" fill="${STONE}"/>
+      <!-- portals (stained) -->
+      <path d="M30 50 L40 28 L50 50 Z" fill="${GOLD}" />
+      <circle cx="40" cy="38" r="3" fill="${TILE_TEAL}"/>
+      <!-- spires (three main) -->
+      <path d="M20 50 L26 22 L32 50 Z" fill="${GOLD}"/>
+      <path d="M36 50 L40 16 L44 50 Z" fill="${GOLD}"/>
+      <path d="M48 50 L54 22 L60 50 Z" fill="${GOLD}"/>
+      <!-- star -->
+      <polygon points="40,8 42,12 46,12 43,15 44,19 40,17 36,19 37,15 34,12 38,12" fill="${TILE_OCHRE}"/>
+      <!-- tiled skirts -->
+      <g>
+        <rect x="12" y="50" width="14" height="10" fill="${TILE_RED}"/>
+        <rect x="54" y="50" width="14" height="10" fill="${TILE_TEAL}"/>
+        <rect x="26" y="50" width="12" height="10" fill="${TILE_OCHRE}"/>
+        <rect x="42" y="50" width="12" height="10" fill="${TILE_BLUE}"/>
       </g>
-    </svg>
+    </g>
+  </svg>
   `,
   park: `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <circle cx="28" cy="26" r="14"/>
-        <circle cx="42" cy="22" r="10"/>
-        <rect x="26" y="34" width="6" height="16" rx="1"/>
-        <rect x="12" y="48" width="40" height="6" rx="3"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <circle cx="36" cy="34" r="15" fill="${TILE_TEAL}"/>
+      <circle cx="50" cy="28" r="11" fill="${TILE_OCHRE}"/>
+      <rect x="34" y="45" width="6" height="16" rx="2" fill="${STONE}"/>
+      <path d="M12 60 Q24 54 36 60 T60 60 T68 60" fill="none" stroke="${DARK}"/>
+      <circle cx="22" cy="32" r="6" fill="${TILE_RED}" stroke="${DARK}"/>
+    </g>
+  </svg>
   `,
   batllo: `
-    <!-- Casa Batlló (wavy façade) -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <path d="M10 28 Q18 18 26 22 T42 22 T54 18 L54 50 L10 50 Z"/>
-        <rect x="18" y="34" width="8" height="8" rx="1"/>
-        <rect x="30" y="34" width="8" height="8" rx="1"/>
-        <rect x="42" y="34" width="8" height="8" rx="1"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <path d="M12 34 Q20 22 30 26 T50 26 T68 22 L68 60 L12 60 Z" fill="${STONE}"/>
+      <rect x="20" y="42" width="10" height="10" rx="2" fill="${TILE_TEAL}"/>
+      <rect x="35" y="42" width="10" height="10" rx="2" fill="${TILE_BLUE}"/>
+      <rect x="50" y="42" width="10" height="10" rx="2" fill="${TILE_OCHRE}"/>
+      <path d="M20 34 C28 30 40 34 60 30" fill="none" stroke="${TILE_RED}"/>
+    </g>
+  </svg>
   `,
   pedrera: `
-    <!-- La Pedrera (Casa Milà) -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <path d="M10 26 Q16 18 24 22 T36 22 T50 18 L54 50 L10 50 Z"/>
-        <rect x="22" y="34" width="8" height="8" rx="1"/>
-        <rect x="34" y="34" width="8" height="8" rx="1"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <path d="M12 32 Q20 20 30 24 T46 24 T66 20 L68 60 L12 60 Z" fill="${STONE}"/>
+      <rect x="26" y="42" width="12" height="10" rx="2" fill="${TILE_OCHRE}"/>
+      <rect x="42" y="42" width="12" height="10" rx="2" fill="${TILE_TEAL}"/>
+      <path d="M18 36 C28 33 38 36 62 32" fill="none" stroke="${TILE_BLUE}"/>
+    </g>
+  </svg>
   `,
   market: `
-    <!-- Market stall -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <path d="M12 24 H52 L48 30 H16 Z"/>
-        <rect x="16" y="30" width="32" height="18" rx="2"/>
-        <rect x="24" y="38" width="16" height="8" rx="1"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <path d="M16 30 H64 L58 38 H22 Z" fill="${GOLD}"/>
+      <rect x="22" y="38" width="36" height="18" rx="3" fill="${STONE}"/>
+      <rect x="30" y="44" width="20" height="8" rx="2" fill="${TILE_TEAL}"/>
+      <circle cx="26" cy="30" r="3" fill="${TILE_RED}"/>
+      <circle cx="54" cy="30" r="3" fill="${TILE_BLUE}"/>
+    </g>
+  </svg>
   `,
   cathedral: `
-    <!-- Gothic cathedral -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <rect x="12" y="36" width="40" height="16" rx="2"/>
-        <rect x="28" y="26" width="8" height="10"/>
-        <path d="M20 36 L20 22 L24 18 L28 22 L28 36 Z"/>
-        <path d="M44 36 L44 22 L40 18 L36 22 L36 36 Z"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <rect x="14" y="44" width="52" height="16" rx="3" fill="${STONE}"/>
+      <rect x="36" y="32" width="8" height="12" fill="${GOLD}"/>
+      <path d="M24 44 L24 28 L30 22 L36 28 L36 44 Z" fill="${GOLD}"/>
+      <path d="M56 44 L56 28 L50 22 L44 28 L44 44 Z" fill="${GOLD}"/>
+      <circle cx="40" cy="18" r="3" fill="${TILE_OCHRE}" stroke="${DARK}"/>
+    </g>
+  </svg>
   `,
   beach: `
-    <!-- Umbrella + waves -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10 50 Q16 46 22 50 T34 50 T54 50" />
-        <rect x="28" y="22" width="4" height="22" rx="2"/>
-        <path d="M14 28 Q30 12 46 28 Z" />
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 58 Q24 52 34 58 T54 58 T66 58" fill="none" stroke="${TILE_BLUE}"/>
+      <rect x="38" y="28" width="4" height="24" rx="2" fill="${STONE}"/>
+      <path d="M22 32 Q40 16 58 32 Z" fill="${GOLD}"/>
+      <circle cx="58" cy="20" r="5" fill="${TILE_OCHRE}" stroke="${DARK}"/>
+    </g>
+  </svg>
   `,
   fountain: `
-    <!-- Magic fountain -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
-        <rect x="18" y="42" width="28" height="8" rx="4"/>
-        <circle cx="32" cy="36" r="5"/>
-        <path d="M32 32 C28 24, 20 24, 16 30"/>
-        <path d="M32 32 C36 24, 44 24, 48 30"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="26" y="48" width="28" height="10" rx="5" fill="${STONE}"/>
+      <circle cx="40" cy="42" r="6" fill="${TILE_TEAL}"/>
+      <path d="M40 38 C34 28 22 28 18 34" fill="none" stroke="${TILE_BLUE}"/>
+      <path d="M40 38 C46 28 58 28 62 34" fill="none" stroke="${TILE_BLUE}"/>
+    </g>
+  </svg>
   `,
   museum: `
-    <!-- Temple/columns -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <path d="M12 26 L32 16 L52 26 Z"/>
-        <rect x="16" y="26" width="32" height="16"/>
-        <rect x="18" y="44" width="28" height="8" rx="2"/>
-        <line x1="24" y1="26" x2="24" y2="42"/>
-        <line x1="32" y1="26" x2="32" y2="42"/>
-        <line x1="40" y1="26" x2="40" y2="42"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <path d="M16 34 L40 22 L64 34 Z" fill="${GOLD}"/>
+      <rect x="22" y="34" width="36" height="16" fill="${STONE}"/>
+      <rect x="24" y="52" width="32" height="8" rx="3" fill="${TILE_OCHRE}"/>
+      <line x1="28" y1="34" x2="28" y2="52" />
+      <line x1="40" y1="34" x2="40" y2="52" />
+      <line x1="52" y1="34" x2="52" y2="52" />
+    </g>
+  </svg>
   `,
   music: `
-    <!-- Music note -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <path d="M26 18 L44 14 L44 38"/>
-        <circle cx="26" cy="42" r="7"/>
-        <circle cx="44" cy="42" r="7"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <path d="M32 20 L54 16 L54 44" fill="${GOLD}" />
+      <circle cx="32" cy="50" r="8" fill="${TILE_TEAL}"/>
+      <circle cx="54" cy="50" r="8" fill="${TILE_RED}"/>
+    </g>
+  </svg>
   `,
   stadium: `
-    <!-- Stadium bowl -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <ellipse cx="32" cy="34" rx="20" ry="10"/>
-        <ellipse cx="32" cy="34" rx="12" ry="6" fill="none"/>
-        <rect x="18" y="44" width="28" height="6" rx="3"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <ellipse cx="40" cy="44" rx="22" ry="12" fill="${STONE}"/>
+      <ellipse cx="40" cy="44" rx="14" ry="7" fill="none"/>
+      <rect x="26" y="54" width="28" height="6" rx="3" fill="${TILE_OCHRE}"/>
+    </g>
+  </svg>
   `,
   building: `
-    <!-- Your building -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
-        <rect x="18" y="16" width="28" height="34" rx="3"/>
-        <rect x="24" y="22" width="6" height="6"/>
-        <rect x="34" y="22" width="6" height="6"/>
-        <rect x="24" y="32" width="6" height="6"/>
-        <rect x="34" y="32" width="6" height="6"/>
-      </g>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <g stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+      <rect x="24" y="18" width="32" height="38" rx="4" fill="${GOLD}"/>
+      <rect x="28" y="24" width="8" height="8" fill="${TILE_TEAL}"/>
+      <rect x="44" y="24" width="8" height="8" fill="${TILE_BLUE}"/>
+      <rect x="28" y="36" width="8" height="8" fill="${TILE_OCHRE}"/>
+      <rect x="44" y="36" width="8" height="8" fill="${TILE_RED}"/>
+    </g>
+  </svg>
   `
 };
 
-/* Build icon objects */
-const ICON = {};
-for (const k in svg) ICON[k] = makeIcon(svg[k], ICON_SIZE);
+/* Build Leaflet icons */
+const ICON = Object.fromEntries(Object.entries(SVG).map(
+  ([k, v]) => [k, iconFromSVG(v, ICON_SIZE)]
+));
 
-/* ====== Map ====== */
+/* Map */
 const map = L.map('map').setView([41.387, 2.17], 12);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19
-}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-/* POIs (English popups) */
+/* Distance + walking time (straight-line ≈ 13 min/km) */
+function haversineKm(a, b){
+  const R=6371, toRad=d=>d*Math.PI/180;
+  const dLat=toRad(b.lat-a.lat), dLon=toRad(b.lon-a.lon);
+  const lat1=toRad(a.lat), lat2=toRad(b.lat);
+  const s=Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s));
+}
+const kmToWalkMin = (km)=>Math.max(1, Math.round(km*13));
+
+/* POIs */
 const places = [
   {name:'Sagrada Família',      lat:41.40363, lon:2.17436, icon:ICON.sagrada,   desc:'Gaudí’s basilica.'},
   {name:'Park Güell',           lat:41.41449, lon:2.15269, icon:ICON.park,      desc:'Famous park with mosaics.'},
@@ -188,23 +214,32 @@ const places = [
   {name:'MNAC – National Art Museum', lat:41.36874, lon:2.15301, icon:ICON.museum, desc:'Catalan art museum with city views.'},
   {name:'Palau de la Música Catalana', lat:41.38702, lon:2.17410, icon:ICON.music, desc:'Modernist concert hall.'},
   {name:'Spotify Camp Nou',     lat:41.38090, lon:2.12282, icon:ICON.stadium,   desc:'FC Barcelona stadium.'},
-  {name:'El Alma de las Ramblas – Santa Anna 12', lat:41.385116, lon:2.171445, icon:ICON.building, desc:'Our apartments – heart of Barcelona.'}
+  {name:'El Alma de las Ramblas – Santa Anna 12', lat:ORIGIN.lat, lon:ORIGIN.lon, icon:ICON.building, desc:'Our apartments – heart of Barcelona.'}
 ];
 
-/* Render markers + popups */
+/* Render with hover + popup + walking time */
 const markers = places.map(p => {
+  const km = haversineKm(ORIGIN, p);
+  const mins = kmToWalkMin(km);
+  const here = p.name.includes('El Alma');
+
   const m = L.marker([p.lat, p.lon], { icon: p.icon }).addTo(map);
+
+  // Hover tooltip (name • min walk)
+  m.bindTooltip(here ? p.name : `${p.name} • ${mins} min walk`, { direction:'top', offset:[0, -8] });
+
+  // Click popup (with link)
   m.bindPopup(`
     <strong>${p.name}</strong><br>
     ${p.desc || ''}<br>
+    ${here ? 'Start here' : `~${mins} min walk (approx.)`}<br>
     <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name+' Barcelona')}">Open in Google Maps</a>
   `);
+
   return m;
 });
 
-/* Fit to all points */
 map.fitBounds(L.featureGroup(markers).getBounds(), { padding: [40, 40] });
-
 </script>
 </body>
 </html>
