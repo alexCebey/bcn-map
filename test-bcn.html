@@ -1,0 +1,26 @@
+<!-- Container with fixed height so it’s visible -->
+ <div id="bcn-map" style="width:80%;height:400;">
+ </div>
+ <!-- Leaflet CSS (allowed in-body) -->
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+ <!-- Leaflet JS -->
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+ </script>
+ <script>
+  (function initOnce(){
+  // Guard: if Leaflet didn’t load, abort
+  if (typeof L === 'undefined') { return; }
+  // --- Tiny inline SVG -> Leaflet icon helper ---
+  const GOLD = '#C8A15E', DARK = '#111111';
+  function makeIcon(svg, size){ 
+    const url = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    return L.icon({ iconUrl:url, iconSize:[size,size], iconAnchor:[size/2,size], popupAnchor:[0,-size*0.7] });
+  }
+  const svg = {
+    sagrada:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round"><rect x="10" y="40" width="44" height="12" rx="2"></rect><path d="M20 40 L24 18 L28 40 Z"></path><path d="M31 40 L34 12 L37 40 Z"></path><path d="M40 40 L44 18 L48 40 Z"></path><line x1="24" y1="18" x2="24" y2="14"></line><line x1="34" y1="12" x2="34" y2="8"></line><line x1="44" y1="18" x2="44" y2="14"></line></g></svg>`,
+    park:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round"><circle cx="28" cy="26" r="14"></circle><circle cx="40" cy="22" r="10"></circle><rect x="26" y="34" width="6" height="16" rx="1"></rect><rect x="12" y="46" width="40" height="6" rx="3"></rect></g></svg>`,
+    houseWavy:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round"><path d="M10 28 Q18 20 26 24 T42 24 T54 20 L54 48 L10 48 Z"></path><rect x="18" y="34" width="8" height="8" rx="1"></rect><rect x="30" y="34" width="8" height="8" rx="1"></rect><rect x="42" y="34" width="8" height="8" rx="1"></rect></g></svg>`,
+    houseWavier:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round"><path d="M10 26 Q16 18 24 22 T36 22 T50 18 L54 48 L10 48 Z"></path><rect x="22" y="34" width="8" height="8" rx="1"></rect><rect x="34" y="34" width="8" height="8" rx="1"></rect></g></svg>`,
+    market:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round"><path d="M12 24 L52 24 L48 30 H16 Z"></path><rect x="16" y="30" width="32" height="16" rx="2"></rect><rect x="24" y="38" width="16" height="8" rx="1"></rect><line x1="20" y1="24" x2="24" y2="14"></line><line x1="44" y1="24" x2="40" y2="14"></line></g></svg>`,
+    cathedral:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round"><rect x="12" y="36" width="40" height="16" rx="2"></rect><rect x="28" y="26" w
+ </script>
