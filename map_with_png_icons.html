@@ -1,12 +1,33 @@
-function makeIcon(url, size=56) {
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Barcelona Highlights – PNG Icons</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    html, body, #map { margin:0; padding:0; height:100%; }
+    .leaflet-popup-content { font:14px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const ORIGIN = { lat:41.385116, lon:2.171445 }; // Santa Anna 12
+
+function makeIcon(url, size=56){
   return L.icon({
     iconUrl: url,
-    iconSize: [size, size],
+    iconSize: [size,size],
     iconAnchor: [size/2, size],
     popupAnchor: [0, -size*0.7]
   });
 }
 
+// adjust this according to your repo folder
+// icons must be in: icons/*.png
 const ICON = {
   building: makeIcon('icons/building.png'),
   sagrada:  makeIcon('icons/sagrada.png'),
@@ -21,3 +42,53 @@ const ICON = {
   stadium:  makeIcon('icons/stadium.png'),
   park:     makeIcon('icons/park.png')
 };
+
+const map = L.map('map').setView([41.387,2.17], 12);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(map);
+
+function haversineKm(a,b){
+  const R=6371, toRad=d=>d*Math.PI/180;
+  const dLat=toRad(b.lat-a.lat), dLon=toRad(b.lon-a.lon);
+  const lat1=toRad(a.lat), lat2=toRad(b.lat);
+  const s=Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s));
+}
+const kmToWalkMin = km => Math.max(1, Math.round(km*13));
+
+const places = [
+  {name:'Sagrada Família',      lat:41.40363, lon:2.17436, icon:ICON.sagrada,   desc:'Gaudí’s basilica.'},
+  {name:'Park Güell',           lat:41.41449, lon:2.15269, icon:ICON.park,      desc:'Famous park with mosaics.'},
+  {name:'Casa Batlló',          lat:41.39164, lon:2.16487, icon:ICON.batllo,    desc:'Modernist icon by Gaudí.'},
+  {name:'La Pedrera (Casa Milà)',lat:41.39537,lon:2.16184, icon:ICON.pedrera,   desc:'Wavy stone façade & rooftop chimneys.'},
+  {name:'La Boqueria Market',   lat:41.38277, lon:2.17192, icon:ICON.market,    desc:'Historic food market on La Rambla.'},
+  {name:'Barcelona Cathedral',  lat:41.38398, lon:2.17630, icon:ICON.cathedral, desc:'Gothic Quarter cathedral.'},
+  {name:'Barceloneta Beach',    lat:41.37669, lon:2.18962, icon:ICON.beach,     desc:'City beach & promenade.'},
+  {name:'Magic Fountain',       lat:41.37126, lon:2.15189, icon:ICON.fountain,  desc:'Night light & music fountain show.'},
+  {name:'MNAC – National Art Museum', lat:41.36874, lon:2.15301, icon:ICON.museum, desc:'Catalan art museum with views.'},
+  {name:'Palau de la Música Catalana', lat:41.38702, lon:2.17410, icon:ICON.music, desc:'Modernist concert hall.'},
+  {name:'Spotify Camp Nou',     lat:41.38090, lon:2.12282, icon:ICON.stadium,   desc:'FC Barcelona stadium.'},
+  {name:'El Alma de las Ramblas – Santa Anna 12', lat:ORIGIN.lat, lon:ORIGIN.lon, icon:ICON.building, desc:'Our apartments – heart of Barcelona.'}
+];
+
+const markers = places.map(p => {
+  const km = haversineKm(ORIGIN, p);
+  const mins = kmToWalkMin(km);
+  const here = p.name.includes('El Alma');
+
+  const m = L.marker([p.lat, p.lon], { icon: p.icon }).addTo(map);
+  m.bindTooltip(here ? p.name : `${p.name} • ${mins} min walk`, { direction:'top', offset:[0,-8] });
+  m.bindPopup(`
+    <strong>${p.name}</strong><br>
+    ${p.desc||''}<br>
+    ${here ? 'Start here' : '~'+mins+' min walk (approx.)'}<br>
+    <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name+' Barcelona')}">
+      Open in Google Maps
+    </a>
+  `);
+  return m;
+});
+
+map.fitBounds(L.featureGroup(markers).getBounds(), { padding:[40,40] });
+</script>
+</body>
+</html>
