@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Barcelona Highlights – Custom Icons</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Barcelona Highlights – Filled Icons (Gold + Dark)</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     html, body, #map { margin:0; padding:0; height:100%; }
@@ -15,62 +15,196 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const GOLD = '#C8A15E', DARK = '#111';
+/* ====== Config ====== */
+const GOLD = '#C8A15E';     // brand gold
+const DARK = '#111111';     // outline
+const ICON_SIZE = 50;       // <— make bigger/smaller here (px)
 
-function makeIcon(svg, size){
+/* Build Leaflet icon from inline SVG */
+function makeIcon(svg, size = ICON_SIZE){
   const url = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
   return L.icon({
-    iconUrl:url,
-    iconSize:[size,size],
-    iconAnchor:[size/2,size],
-    popupAnchor:[0,-size*0.7]
+    iconUrl: url,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size],    // bottom center
+    popupAnchor: [0, -size*0.7]
   });
 }
 
+/* ====== Filled (2-tone) SVGs ======
+   Simple, bold silhouettes with dark stroke for readability.
+*/
 const svg = {
-  sagrada:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><rect x="10" y="40" width="44" height="12" rx="2"/><path d="M20 40 L24 18 L28 40 Z"/><path d="M31 40 L34 12 L37 40 Z"/><path d="M40 40 L44 18 L48 40 Z"/></g></svg>`,
-  park:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><circle cx="28" cy="26" r="14"/><circle cx="40" cy="22" r="10"/></g></svg>`,
-  batllo:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><path d="M10 28 Q18 20 26 24 T42 24 T54 20 L54 48 L10 48 Z"/></g></svg>`,
-  pedrera:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><path d="M10 26 Q16 18 24 22 T36 22 T50 18 L54 48 L10 48 Z"/></g></svg>`,
-  market:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><rect x="16" y="30" width="32" height="16" rx="2"/></g></svg>`,
-  cathedral:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><rect x="12" y="36" width="40" height="16" rx="2"/></g></svg>`,
-  beach:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><path d="M10 46 Q16 42 22 46 T34 46 T54 46"/></g></svg>`,
-  fountain:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><circle cx="32" cy="36" r="4"/></g></svg>`,
-  museum:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><rect x="18" y="42" width="28" height="8" rx="2"/></g></svg>`,
-  music:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><circle cx="26" cy="42" r="6"/></g></svg>`,
-  stadium:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><ellipse cx="32" cy="34" rx="20" ry="10"/></g></svg>`,
-  building:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="${GOLD}" stroke="${DARK}" stroke-width="2"><rect x="18" y="18" width="28" height="30" rx="2"/></g></svg>`
+  sagrada: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <rect x="8" y="40" width="48" height="14" rx="3"/>
+        <path d="M18 40 L24 16 L30 40 Z"/>
+        <path d="M30 40 L34 10 L38 40 Z"/>
+        <path d="M42 40 L46 16 L50 40 Z"/>
+      </g>
+    </svg>
+  `,
+  park: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <circle cx="28" cy="26" r="14"/>
+        <circle cx="42" cy="22" r="10"/>
+        <rect x="26" y="34" width="6" height="16" rx="1"/>
+        <rect x="12" y="48" width="40" height="6" rx="3"/>
+      </g>
+    </svg>
+  `,
+  batllo: `
+    <!-- Casa Batlló (wavy façade) -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <path d="M10 28 Q18 18 26 22 T42 22 T54 18 L54 50 L10 50 Z"/>
+        <rect x="18" y="34" width="8" height="8" rx="1"/>
+        <rect x="30" y="34" width="8" height="8" rx="1"/>
+        <rect x="42" y="34" width="8" height="8" rx="1"/>
+      </g>
+    </svg>
+  `,
+  pedrera: `
+    <!-- La Pedrera (Casa Milà) -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <path d="M10 26 Q16 18 24 22 T36 22 T50 18 L54 50 L10 50 Z"/>
+        <rect x="22" y="34" width="8" height="8" rx="1"/>
+        <rect x="34" y="34" width="8" height="8" rx="1"/>
+      </g>
+    </svg>
+  `,
+  market: `
+    <!-- Market stall -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <path d="M12 24 H52 L48 30 H16 Z"/>
+        <rect x="16" y="30" width="32" height="18" rx="2"/>
+        <rect x="24" y="38" width="16" height="8" rx="1"/>
+      </g>
+    </svg>
+  `,
+  cathedral: `
+    <!-- Gothic cathedral -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <rect x="12" y="36" width="40" height="16" rx="2"/>
+        <rect x="28" y="26" width="8" height="10"/>
+        <path d="M20 36 L20 22 L24 18 L28 22 L28 36 Z"/>
+        <path d="M44 36 L44 22 L40 18 L36 22 L36 36 Z"/>
+      </g>
+    </svg>
+  `,
+  beach: `
+    <!-- Umbrella + waves -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 50 Q16 46 22 50 T34 50 T54 50" />
+        <rect x="28" y="22" width="4" height="22" rx="2"/>
+        <path d="M14 28 Q30 12 46 28 Z" />
+      </g>
+    </svg>
+  `,
+  fountain: `
+    <!-- Magic fountain -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+        <rect x="18" y="42" width="28" height="8" rx="4"/>
+        <circle cx="32" cy="36" r="5"/>
+        <path d="M32 32 C28 24, 20 24, 16 30"/>
+        <path d="M32 32 C36 24, 44 24, 48 30"/>
+      </g>
+    </svg>
+  `,
+  museum: `
+    <!-- Temple/columns -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <path d="M12 26 L32 16 L52 26 Z"/>
+        <rect x="16" y="26" width="32" height="16"/>
+        <rect x="18" y="44" width="28" height="8" rx="2"/>
+        <line x1="24" y1="26" x2="24" y2="42"/>
+        <line x1="32" y1="26" x2="32" y2="42"/>
+        <line x1="40" y1="26" x2="40" y2="42"/>
+      </g>
+    </svg>
+  `,
+  music: `
+    <!-- Music note -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <path d="M26 18 L44 14 L44 38"/>
+        <circle cx="26" cy="42" r="7"/>
+        <circle cx="44" cy="42" r="7"/>
+      </g>
+    </svg>
+  `,
+  stadium: `
+    <!-- Stadium bowl -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <ellipse cx="32" cy="34" rx="20" ry="10"/>
+        <ellipse cx="32" cy="34" rx="12" ry="6" fill="none"/>
+        <rect x="18" y="44" width="28" height="6" rx="3"/>
+      </g>
+    </svg>
+  `,
+  building: `
+    <!-- Your building -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <g fill="${GOLD}" stroke="${DARK}" stroke-width="2" stroke-linejoin="round">
+        <rect x="18" y="16" width="28" height="34" rx="3"/>
+        <rect x="24" y="22" width="6" height="6"/>
+        <rect x="34" y="22" width="6" height="6"/>
+        <rect x="24" y="32" width="6" height="6"/>
+        <rect x="34" y="32" width="6" height="6"/>
+      </g>
+    </svg>
+  `
 };
 
+/* Build icon objects */
 const ICON = {};
-for (const k in svg) ICON[k] = makeIcon(svg[k], 36);
+for (const k in svg) ICON[k] = makeIcon(svg[k], ICON_SIZE);
 
-const map = L.map('map').setView([41.387,2.17],12);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+/* ====== Map ====== */
+const map = L.map('map').setView([41.387, 2.17], 12);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19
+}).addTo(map);
 
+/* POIs (English popups) */
 const places = [
-  {n:'Sagrada Família', lat:41.40363, lon:2.17436, i:ICON.sagrada, d:'Gaudí’s basilica.'},
-  {n:'Park Güell', lat:41.41449, lon:2.15269, i:ICON.park, d:'Famous park with mosaics.'},
-  {n:'Casa Batlló', lat:41.39164, lon:2.16487, i:ICON.batllo, d:'Modernist icon.'},
-  {n:'La Pedrera (Milà)', lat:41.39537, lon:2.16184, i:ICON.pedrera, d:'Stone facade & roof chimneys.'},
-  {n:'La Boqueria', lat:41.38277, lon:2.17192, i:ICON.market, d:'Historic food market.'},
-  {n:'Barcelona Cathedral', lat:41.38398, lon:2.17630, i:ICON.cathedral, d:'Gothic Quarter church.'},
-  {n:'Barceloneta Beach', lat:41.37669, lon:2.18962, i:ICON.beach, d:'City beach & promenade.'},
-  {n:'Magic Fountain', lat:41.37126, lon:2.15189, i:ICON.fountain, d:'Night fountain show.'},
-  {n:'MNAC Museum', lat:41.36874, lon:2.15301, i:ICON.museum, d:'Catalan art museum.'},
-  {n:'Palau de la Música', lat:41.38702, lon:2.17410, i:ICON.music, d:'Concert hall.'},
-  {n:'Camp Nou', lat:41.38090, lon:2.12282, i:ICON.stadium, d:'FC Barcelona stadium.'},
-  {n:'El Alma de las Ramblas', lat:41.385116, lon:2.171445, i:ICON.building, d:'Our apartments – Santa Anna 12.'}
+  {name:'Sagrada Família',      lat:41.40363, lon:2.17436, icon:ICON.sagrada,   desc:'Gaudí’s basilica.'},
+  {name:'Park Güell',           lat:41.41449, lon:2.15269, icon:ICON.park,      desc:'Famous park with mosaics.'},
+  {name:'Casa Batlló',          lat:41.39164, lon:2.16487, icon:ICON.batllo,    desc:'Modernist icon by Gaudí.'},
+  {name:'La Pedrera (Casa Milà)',lat:41.39537,lon:2.16184, icon:ICON.pedrera,   desc:'Wavy stone façade & rooftop chimneys.'},
+  {name:'La Boqueria Market',   lat:41.38277, lon:2.17192, icon:ICON.market,    desc:'Historic food market on La Rambla.'},
+  {name:'Barcelona Cathedral',  lat:41.38398, lon:2.17630, icon:ICON.cathedral, desc:'Gothic Quarter cathedral.'},
+  {name:'Barceloneta Beach',    lat:41.37669, lon:2.18962, icon:ICON.beach,     desc:'City beach & seaside promenade.'},
+  {name:'Magic Fountain',       lat:41.37126, lon:2.15189, icon:ICON.fountain,  desc:'Night light & music fountain show.'},
+  {name:'MNAC – National Art Museum', lat:41.36874, lon:2.15301, icon:ICON.museum, desc:'Catalan art museum with city views.'},
+  {name:'Palau de la Música Catalana', lat:41.38702, lon:2.17410, icon:ICON.music, desc:'Modernist concert hall.'},
+  {name:'Spotify Camp Nou',     lat:41.38090, lon:2.12282, icon:ICON.stadium,   desc:'FC Barcelona stadium.'},
+  {name:'El Alma de las Ramblas – Santa Anna 12', lat:41.385116, lon:2.171445, icon:ICON.building, desc:'Our apartments – heart of Barcelona.'}
 ];
 
-const ms = places.map(p => {
-  const m = L.marker([p.lat,p.lon],{icon:p.i}).addTo(map);
-  m.bindPopup(`<strong>${p.n}</strong><br>${p.d}`);
+/* Render markers + popups */
+const markers = places.map(p => {
+  const m = L.marker([p.lat, p.lon], { icon: p.icon }).addTo(map);
+  m.bindPopup(`
+    <strong>${p.name}</strong><br>
+    ${p.desc || ''}<br>
+    <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name+' Barcelona')}">Open in Google Maps</a>
+  `);
   return m;
 });
 
-map.fitBounds(L.featureGroup(ms).getBounds(),{padding:[40,40]});
+/* Fit to all points */
+map.fitBounds(L.featureGroup(markers).getBounds(), { padding: [40, 40] });
+
 </script>
 </body>
 </html>
-
