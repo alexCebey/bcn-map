@@ -1,0 +1,23 @@
+function makeIcon(url, size=56) {
+  return L.icon({
+    iconUrl: url,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size],
+    popupAnchor: [0, -size*0.7]
+  });
+}
+
+const ICON = {
+  building: makeIcon('icons/building.png'),
+  sagrada:  makeIcon('icons/sagrada.png'),
+  batllo:   makeIcon('icons/batllo.png'),
+  pedrera:  makeIcon('icons/pedrera.png'),
+  market:   makeIcon('icons/market.png'),
+  cathedral:makeIcon('icons/cathedral.png'),
+  beach:    makeIcon('icons/beach.png'),
+  fountain: makeIcon('icons/fountain.png'),
+  museum:   makeIcon('icons/museum.png'),
+  music:    makeIcon('icons/music.png'),
+  stadium:  makeIcon('icons/stadium.png'),
+  park:     makeIcon('icons/park.png')
+};
