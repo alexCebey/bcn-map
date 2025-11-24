@@ -88,10 +88,11 @@ const markers = places.map(p => {
   return m;
 });
 
-map.fitBounds(L.featureGroup(markers).getBounds(), { padding:[20,20] });
+map.setBearing(300).fitBounds(L.featureGroup(markers).getBounds(), { padding:[20,20] });
 </script>
 </body>
 </html>
+
 
 
 
