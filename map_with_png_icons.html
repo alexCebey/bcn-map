@@ -43,7 +43,7 @@ const ICON = {
   park:     makeIcon('icons/park.png')
 };
 
-const map = L.map('map').setView([41.387,2.17], 17);
+const map = L.map('map').setView([41.387,2.17], 15);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(map);
 
 function haversineKm(a,b){
@@ -99,6 +99,7 @@ map.fitBounds(circle.getBounds());
 </script>
 </body>
 </html>
+
 
 
 
