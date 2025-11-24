@@ -89,10 +89,17 @@ const markers = places.map(p => {
 });
 
 //map.fitBounds(L.featureGroup(markers).getBounds(), { padding:[20,20] });
-map.fitBounds([[41.4 , 2.16667], [41.411181 , 2.17334]]);
+//map.fitBounds([[41.4 , 2.16667], [41.411181 , 2.17334]]); //establishing the size based on coordinates
+  
+const radius = 1000; // meters
+const circle = L.circle(ORIGIN, radius);
+  
+map.fitBounds(circle.getBounds());
+  
 </script>
 </body>
 </html>
+
 
 
 
