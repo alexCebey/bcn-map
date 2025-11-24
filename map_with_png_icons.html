@@ -17,7 +17,7 @@
 <script>
 const ORIGIN = { lat:41.385116, lon:2.171445 }; // Santa Anna 12
 
-function makeIcon(url, size=50){
+function makeIcon(url, size=55){
   return L.icon({
     iconUrl: url,
     iconSize: [size,size],
@@ -91,7 +91,7 @@ const markers = places.map(p => {
 //map.fitBounds(L.featureGroup(markers).getBounds(), { padding:[20,20] });
 //map.fitBounds([[41.4 , 2.16667], [41.411181 , 2.17334]]); //establishing the size based on coordinates
   
-const radius = 2000; // meters
+const radius = 4000; // meters
 const circle = L.circle(ORIGIN, radius);
   
 map.fitBounds(circle.getBounds());
@@ -99,6 +99,7 @@ map.fitBounds(circle.getBounds());
 </script>
 </body>
 </html>
+
 
 
 
