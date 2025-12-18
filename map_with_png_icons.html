@@ -56,7 +56,7 @@ function haversineKm(a,b){
 const kmToWalkMin = km => Math.max(1, Math.round(km*13));
 
 const places = [
-  {name:'El Alma de las Ramblas – Santa Anna 12', lat:ORIGIN.lat, lon:ORIGIN.lon, icon:ICON.building, desc:'Our apartments – heart of Barcelona.'}
+  {name:'El Alma de las Ramblas – Santa Anna 12', lat:ORIGIN.lat, lon:ORIGIN.lon, icon:ICON.building, desc:'Our apartments – heart of Barcelona.'},
   {name:'Sagrada Família',      lat:41.40363, lon:2.17436, icon:ICON.sagrada,   desc:'Gaudí’s basilica.'},
   {name:'Park Güell',           lat:41.41449, lon:2.15269, icon:ICON.park,      desc:'Famous park with mosaics.'},
   {name:'Casa Batlló',          lat:41.39164, lon:2.16487, icon:ICON.batllo,    desc:'Modernist icon by Gaudí.'},
@@ -67,8 +67,7 @@ const places = [
   {name:'Magic Fountain',       lat:41.37126, lon:2.15189, icon:ICON.fountain,  desc:'Night light & music fountain show.'},
   {name:'MNAC – National Art Museum', lat:41.36874, lon:2.15301, icon:ICON.museum, desc:'Catalan art museum with views of the city.'},
   {name:'Palau de la Música Catalana', lat:41.38702, lon:2.17410, icon:ICON.music, desc:'Modernist concert hall.'},
-  {name:'Spotify Camp Nou',     lat:41.38090, lon:2.12282, icon:ICON.stadium,   desc:'FC Barcelona stadium.'},
-
+  {name:'Spotify Camp Nou',     lat:41.38090, lon:2.12282, icon:ICON.stadium,   desc:'FC Barcelona stadium.'}
 ];
 
 const markers = places.map(p => {
@@ -100,6 +99,7 @@ const markers = places.map(p => {
 </script>
 </body>
 </html>
+
 
 
 
