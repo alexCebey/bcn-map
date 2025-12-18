@@ -43,7 +43,7 @@ const ICON = {
   park:     makeIcon('icons/park.png')
 };
 
-const map = L.map('map').setView([41.39075 , 2.13953], 15);
+const map = L.map('map').setView([41.394520 , 2.171445], 15);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(map);
 
 function haversineKm(a,b){
@@ -100,6 +100,7 @@ const markers = places.map(p => {
 </script>
 </body>
 </html>
+
 
 
 
